@@ -3,9 +3,9 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import React from "react";
 import { TreeView } from "@mui/x-tree-view";
-import { TreeComponent } from "./TreeComponent";
 import { selectTreeData } from "./treeSlice";
 import { useSelector } from "react-redux";
+import {Tree} from "./Tree";
 
 export type TreeNodeType = {
     id: string;
@@ -26,7 +26,7 @@ export function App() {
                 defaultExpandIcon={<ChevronRightIcon />}
             >
                 {treeData.map((el: TreeNodeType) => (
-                    <TreeComponent key={el.id.toString()} nodes={el} isRoot nodeId={el.id.toString()} />
+                    <Tree key={el.id.toString()} nodes={el} isRoot nodeId={el.id.toString()} />
                 ))}
             </TreeView>
         </Box>
