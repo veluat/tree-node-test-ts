@@ -6,9 +6,9 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import {DialogContentText, Paper, TextField} from "@mui/material";
 import style from './Modal.module.scss'
-import {addNode, deleteNode, renameNode} from "./treeSlice";
 import {useDispatch} from "react-redux";
 import uuid from 'react-uuid';
+import {addNode, deleteNode, renameNode} from "treeSlice";
 
 type ModalProps = {
     open: boolean;
