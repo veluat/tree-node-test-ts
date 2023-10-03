@@ -96,7 +96,7 @@ export const Modal: React.FC<ModalProps> = ({
                         ) : (
                             <TextField
                                 id="outlined-basic"
-                                value={newNodeName}
+                                value={title === "Add" ? '' : newNodeName}
                                 label={label}
                                 variant="outlined"
                                 onChange={handleNodeNameChange}
