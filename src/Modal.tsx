@@ -1,4 +1,4 @@
-import React, {useRef, useState} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
@@ -9,7 +9,6 @@ import style from './Modal.module.scss'
 import {useDispatch} from "react-redux";
 import uuid from 'react-uuid';
 import {addNode, checkIfNodeHasChildren, deleteNode, renameNode} from "./treeSlice";
-import {Node, TreeState} from "./treeSlice";
 import {selectTreeData, store} from "./store";
 
 type ModalProps = {
@@ -30,7 +29,8 @@ export const Modal: React.FC<ModalProps> = ({
                                                 nodeId,
                                             }) => {
     const inputRef = useRef<HTMLInputElement | null>(null);
-    const [newNodeName, setNewNodeName] = React.useState(nodeName);
+    const [newNodeName, setNewNodeName] = useState(title === "Add" ? "" : nodeName);
+
     const [showAlert, setShowAlert] = useState(false);
     const dispatch = useDispatch();
     const treeData = selectTreeData(store.getState());
@@ -52,8 +52,6 @@ export const Modal: React.FC<ModalProps> = ({
         }
     };
 
-
-
     const handleSave = () => {
         if (title === "Rename") {
             if (nodeId) {
@@ -65,6 +63,7 @@ export const Modal: React.FC<ModalProps> = ({
                 dispatch(addNode({parentId: nodeId, newNode}));
             }
         }
+        setNewNodeName("")
         setOpen(false)
     };
 
@@ -76,9 +75,13 @@ export const Modal: React.FC<ModalProps> = ({
         e.stopPropagation();
     };
 
-    React.useEffect(() => {
-        setNewNodeName(nodeName);
-    }, [nodeName]);
+    useEffect(() => {
+        if (title === "Add") {
+            setNewNodeName("");
+        } else {
+            setNewNodeName(nodeName);
+        }
+    }, [title, nodeName]);
 
     const generateUniqueId = () => {
         return uuid();
@@ -100,48 +103,59 @@ export const Modal: React.FC<ModalProps> = ({
                 </div>
                 <div className={style.label}>
                     <DialogContent>
-                        {title === "Delete" ? (
-                            <DialogContentText id="alert-dialog-description" className={style.delete}>
-                                {label}
-                            </DialogContentText>
-                        ) : (
-                            <TextField
-                                id="outlined-basic"
-                                value={newNodeName}
-                                label={label}
-                                variant="outlined"
-                                onChange={handleNodeNameChange}
-                                inputRef={inputRef}
-                            />
-                        )}
-                        {showAlert && (
-                            <Alert severity="error">'You have to delete all children nodes first'</Alert>
-                        )}
+                        {showAlert ? (
+                                <Alert severity="error">
+                                    'You have to delete all children nodes first'
+                                </Alert>
+                            ) :
+                            title === "Delete" ?
+                                (<DialogContentText id="alert-dialog-description" className={style.delete}>
+                                    <div>{label}</div>
+                                </DialogContentText>)
+                                : (
+                                    <TextField
+                                        id="outlined-basic"
+                                        value={newNodeName}
+                                        label={label}
+                                        variant="outlined"
+                                        onChange={handleNodeNameChange}
+                                        inputRef={inputRef}
+                                        placeholder={title === "Add" ? "" : nodeName}
+                                        autoComplete="off"
+                                    />
+                                )
+                        }
                     </DialogContent>
                 </div>
                 <div className={style.button}>
-                    <DialogActions>
-                        {title === "Delete" && (
-                            <Button variant="outlined" onClick={handleDelete}>
-                                Delete
+                    {showAlert ? <DialogActions>
+                            <Button variant="contained" onClick={() => setOpen(false)}>
+                                Close
                             </Button>
-                        )}
-                        {title === "Add" && (
-                            <Button variant="contained" onClick={handleSave} autoFocus>
-                                Add
+                        </DialogActions> :
+                        (<DialogActions>
+                            {title === "Delete" && (
+                                <Button variant="outlined" onClick={handleDelete} color="error">
+                                    Delete
+                                </Button>
+                            )}
+                            {title === "Add" && (
+                                <Button variant="contained" onClick={handleSave} autoFocus>
+                                    Add
+                                </Button>
+                            )}
+                            {title === "Rename" && (
+                                <Button variant="contained" onClick={handleSave} autoFocus>
+                                    Rename
+                                </Button>
+                            )}
+                            <Button variant="outlined" onClick={() => setOpen(false)}>
+                                Cancel
                             </Button>
-                        )}
-                        {title === "Rename" && (
-                            <Button variant="contained" onClick={handleSave} autoFocus>
-                                Rename
-                            </Button>
-                        )}
-                        <Button variant="outlined" onClick={() => setOpen(false)}>
-                            Cancel
-                        </Button>
-                    </DialogActions>
+                        </DialogActions>)}
                 </div>
             </Dialog>
         </Paper>
     );
-};
+}
+
