@@ -1,14 +1,16 @@
-import React, {useRef} from "react";
+import React, {useRef, useState} from "react";
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
-import {DialogContentText, Paper, TextField} from "@mui/material";
+import {Alert, DialogContentText, Paper, TextField} from "@mui/material";
 import style from './Modal.module.scss'
 import {useDispatch} from "react-redux";
 import uuid from 'react-uuid';
-import {addNode, deleteNode, renameNode} from "treeSlice";
+import {addNode, checkIfNodeHasChildren, deleteNode, renameNode} from "./treeSlice";
+import {Node, TreeState} from "./treeSlice";
+import {selectTreeData, store} from "./store";
 
 type ModalProps = {
     open: boolean;
@@ -25,23 +27,32 @@ export const Modal: React.FC<ModalProps> = ({
                                                 title,
                                                 label,
                                                 nodeName = "",
-                                                nodeId
+                                                nodeId,
                                             }) => {
     const inputRef = useRef<HTMLInputElement | null>(null);
     const [newNodeName, setNewNodeName] = React.useState(nodeName);
+    const [showAlert, setShowAlert] = useState(false);
     const dispatch = useDispatch();
+    const treeData = selectTreeData(store.getState());
+
     const handleClose = (event: React.SyntheticEvent, reason: string) => {
         if (reason !== 'backdropClick') {
             setOpen(false);
         }
     };
-
     const handleDelete = () => {
         if (nodeId != null) {
-            dispatch(deleteNode(nodeId));
+            const hasChildren = checkIfNodeHasChildren(treeData, nodeId);
+            if (hasChildren) {
+                setShowAlert(true);
+            } else {
+                dispatch(deleteNode(nodeId));
+                setOpen(false);
+            }
         }
-        setOpen(false)
     };
+
+
 
     const handleSave = () => {
         if (title === "Rename") {
@@ -90,18 +101,21 @@ export const Modal: React.FC<ModalProps> = ({
                 <div className={style.label}>
                     <DialogContent>
                         {title === "Delete" ? (
-                            <DialogContentText id="alert-dialog-description">
+                            <DialogContentText id="alert-dialog-description" className={style.delete}>
                                 {label}
                             </DialogContentText>
                         ) : (
                             <TextField
                                 id="outlined-basic"
-                                value={title === "Add" ? '' : newNodeName}
+                                value={newNodeName}
                                 label={label}
                                 variant="outlined"
                                 onChange={handleNodeNameChange}
                                 inputRef={inputRef}
                             />
+                        )}
+                        {showAlert && (
+                            <Alert severity="error">'You have to delete all children nodes first'</Alert>
                         )}
                     </DialogContent>
                 </div>

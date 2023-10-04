@@ -12,6 +12,9 @@
     border-top: 1px solid rgba(183, 185, 187, 0.53);
     border-bottom: 1px solid rgba(183, 185, 187, 0.53);
     padding: 4px;
+    .delete {
+      color: rgba(0, 0, 0, 0.7);
+    }
   }
   .button {
     padding: 10px;

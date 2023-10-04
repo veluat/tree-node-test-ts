@@ -1,14 +1,15 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { RootState } from "./store";
 
-interface Node {
+export interface Node {
     id: string;
     name: string;
     children?: Node[];
 }
 
-interface TreeState {
+export interface TreeState {
     treeData: Node[];
+    errorMessage: string | null;
 }
 
 const initialState: TreeState = {
@@ -34,6 +35,7 @@ const initialState: TreeState = {
             ],
         },
     ],
+    errorMessage: null
 };
 
 const treeSlice = createSlice({
@@ -56,9 +58,29 @@ const treeSlice = createSlice({
 });
 
 // Helper functions to update the tree data
+export const checkIfNodeHasChildren = (treeData: Node[], nodeId: string): boolean => {
+    const findNode = (nodes: Node[]): boolean => {
+        for (const node of nodes) {
+            if (node.id === nodeId && node.children && node.children.length > 0) {
+                return true;
+            }
+            if (node.children && findNode(node.children)) {
+                return true;
+            }
+        }
+        return false;
+    };
+
+    return findNode(treeData);
+};
 
 const deleteNodeFromTree = (treeData: Node[], nodeId: string): Node[] => {
-    return treeData.flatMap((node) => {
+    const hasChildren = treeData.some(node => node.id === nodeId && node.children);
+    if (hasChildren) {
+        return treeData.map(node => node.id === nodeId ? { ...node, errorMessage: "You have to delete all children nodes first" } : node);
+    }
+
+    return treeData.flatMap(node => {
         if (node.id === nodeId) {
             return [];
         } else if (node.children) {
