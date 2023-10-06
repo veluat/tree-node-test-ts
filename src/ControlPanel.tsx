@@ -8,12 +8,14 @@ interface ControlPanelProps {
     nodeName?: string;
     isRoot?: boolean;
     nodeId?: string
+    parentId?: string
 }
 
 export const ControlPanel: React.FC<ControlPanelProps> = ({
                                                               nodeName = '',
                                                               isRoot,
-                                                              nodeId
+                                                              nodeId,
+                                                              parentId
                                                           }) => {
     const [open, setOpen] = useState(false);
     const [title, setTitle] = useState("Add");
@@ -62,6 +64,7 @@ export const ControlPanel: React.FC<ControlPanelProps> = ({
                     label={label}
                     nodeName={nodeName}
                     nodeId={nodeId}
+                    parentId={parentId}
                 />
             )}
         </div>

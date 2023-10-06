@@ -49,7 +49,7 @@ export const Tree: React.FC<TreeProps> = ({
                     <div style={{ display: "flex", alignItems: "center" }} ref={nodeRef}>
                         {nodes.name}
                         {activeItem === nodes.id ? (
-                            <ControlPanel isRoot={isRoot} nodeName={nodes.name} nodeId={nodeId} />
+                            <ControlPanel isRoot={isRoot} nodeName={nodes.name} nodeId={nodeId} parentId={nodes.id}/>
                         ) : null}
                     </div>
                 }

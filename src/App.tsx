@@ -1,11 +1,13 @@
-import { Box } from "@mui/material";
+import {Box} from "@mui/material";
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
-import React from "react";
-import { TreeView } from "@mui/x-tree-view";
-import { selectTreeData } from "./treeSlice";
-import { useSelector } from "react-redux";
+import React, {useEffect, useState} from "react";
+import {TreeView} from "@mui/x-tree-view";
+import {setTreeData} from "./treeSlice";
+import {useDispatch, useSelector} from "react-redux";
 import {Tree} from "./Tree";
+import {useGetTreeMutation} from "./api";
+import {RootState} from "./store";
 
 export type TreeNodeType = {
     id: string;
@@ -15,18 +17,46 @@ export type TreeNodeType = {
 };
 
 export function App() {
-    const treeData = useSelector(selectTreeData);
 
+    const dispatch = useDispatch();
+
+    const [getTree, {isLoading, error}] = useGetTreeMutation();
+
+    const treeData = useSelector((state: RootState) => state.tree.treeData);
+
+    const [appError, setAppError] = useState<string | null>(null);
+
+    useEffect(() => {
+        getTree("MyTree")
+            .unwrap()
+            .then((responseData) => {
+                dispatch(setTreeData(responseData));
+            })
+            .catch((error) => {
+                if (error.data) {
+                    setAppError(error.data.message);
+                } else {
+                    setAppError(error.toString());
+                }
+            });
+    }, []);
+
+    if (isLoading) {
+        return <div>Loading...</div>
+    }
+    if (error) {
+        return <div>Error: {appError}</div>
+    }
     return (
-        <Box sx={{ height: '100vh', width: '100vw' }}>
+        <Box sx={{height: '100vh', width: '100vw'}}>
             <TreeView
                 aria-label="rich object"
-                defaultCollapseIcon={<ExpandMoreIcon />}
+                defaultCollapseIcon={<ExpandMoreIcon/>}
                 defaultExpanded={['root']}
-                defaultExpandIcon={<ChevronRightIcon />}
+                defaultExpandIcon={<ChevronRightIcon/>}
             >
                 {treeData.map((el: TreeNodeType) => (
-                    <Tree key={el.id.toString()} nodes={el} isRoot nodeId={el.id.toString()} />
+                    <Tree key={el.id.toString()} nodes={el} isRoot nodeId={el.id.toString()}/>
                 ))}
             </TreeView>
         </Box>

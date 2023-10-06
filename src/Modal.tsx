@@ -5,11 +5,12 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import {Alert, DialogContentText, Paper, TextField} from "@mui/material";
-import style from './Modal.module.scss'
+import style from './Modal.module.scss';
 import {useDispatch} from "react-redux";
 import uuid from 'react-uuid';
-import {addNode, checkIfNodeHasChildren, deleteNode, renameNode} from "./treeSlice";
+import {checkIfNodeHasChildren, setTreeData} from "./treeSlice";
 import {selectTreeData, store} from "./store";
+import {useCreateNodeMutation, useDeleteNodeMutation, useRenameNodeMutation} from "./api";
 
 type ModalProps = {
     open: boolean;
@@ -18,6 +19,7 @@ type ModalProps = {
     label: string;
     nodeName: string;
     nodeId?: string;
+    parentId?: string
 };
 
 export const Modal: React.FC<ModalProps> = ({
@@ -27,13 +29,17 @@ export const Modal: React.FC<ModalProps> = ({
                                                 label,
                                                 nodeName = "",
                                                 nodeId,
+                                                parentId
                                             }) => {
     const inputRef = useRef<HTMLInputElement | null>(null);
     const [newNodeName, setNewNodeName] = useState(title === "Add" ? "" : nodeName);
 
     const [showAlert, setShowAlert] = useState(false);
-    const dispatch = useDispatch();
     const treeData = selectTreeData(store.getState());
+
+    const [createNode] = useCreateNodeMutation();
+    const [deleteNodeMutation] = useDeleteNodeMutation();
+    const [renameNodeMutation] = useRenameNodeMutation();
 
     const handleClose = (event: React.SyntheticEvent, reason: string) => {
         if (reason !== 'backdropClick') {
@@ -42,11 +48,11 @@ export const Modal: React.FC<ModalProps> = ({
     };
     const handleDelete = () => {
         if (nodeId != null) {
-            const hasChildren = checkIfNodeHasChildren(treeData, nodeId);
+            const hasChildren = checkIfNodeHasChildren(treeData.treeData, nodeId);
             if (hasChildren) {
                 setShowAlert(true);
             } else {
-                dispatch(deleteNode(nodeId));
+                deleteNodeMutation(nodeId);
                 setOpen(false);
             }
         }
@@ -55,16 +61,16 @@ export const Modal: React.FC<ModalProps> = ({
     const handleSave = () => {
         if (title === "Rename") {
             if (nodeId) {
-                dispatch(renameNode({nodeId, newName: newNodeName}));
+                renameNodeMutation({treeName: nodeName, nodeId, newNodeName});
             }
         } else if (title === "Add") {
-            if (nodeId) {
+            if (nodeId && parentId) {
                 const newNode = {id: generateUniqueId(), name: newNodeName};
-                dispatch(addNode({parentId: nodeId, newNode}));
+                createNode({treeName: nodeName, parentNodeId: parentId, nodeName: newNode.name});
             }
         }
-        setNewNodeName("")
-        setOpen(false)
+        setNewNodeName("");
+        setOpen(false);
     };
 
     const handleNodeNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -110,7 +116,7 @@ export const Modal: React.FC<ModalProps> = ({
                             ) :
                             title === "Delete" ?
                                 (<DialogContentText id="alert-dialog-description" className={style.delete}>
-                                    <div>{label}</div>
+                                    {label}
                                 </DialogContentText>)
                                 : (
                                     <TextField
@@ -158,4 +164,3 @@ export const Modal: React.FC<ModalProps> = ({
         </Paper>
     );
 }
-

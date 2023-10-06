@@ -1,47 +1,24 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { RootState } from "./store";
+import {createSlice, PayloadAction} from "@reduxjs/toolkit";
 
 export interface Node {
     id: string;
     name: string;
     children?: Node[];
 }
-
 export interface TreeState {
     treeData: Node[];
     errorMessage: string | null;
 }
-
-const initialState: TreeState = {
-    treeData: [
-        {
-            id: "root",
-            name: "Parent",
-            children: [
-                {
-                    id: "1",
-                    name: "Child - 1",
-                },
-                {
-                    id: "3",
-                    name: "Child - 3",
-                    children: [
-                        {
-                            id: "4",
-                            name: "Child - 4",
-                        },
-                    ],
-                },
-            ],
-        },
-    ],
-    errorMessage: null
-};
-
-const treeSlice = createSlice({
+export const treeSlice = createSlice({
     name: "tree",
-    initialState,
+    initialState: {
+        treeData: [],
+        errorMessage: null,
+    } as TreeState,
     reducers: {
+        setTreeData: (state, action) => {
+            return state.treeData = action.payload;
+        },
         deleteNode: (state, action: PayloadAction<string>) => {
             const nodeId = action.payload;
             state.treeData = deleteNodeFromTree(state.treeData, nodeId);
@@ -75,12 +52,14 @@ export const checkIfNodeHasChildren = (treeData: Node[], nodeId: string): boolea
 };
 
 const deleteNodeFromTree = (treeData: Node[], nodeId: string): Node[] => {
-    const hasChildren = treeData.some(node => node.id === nodeId && node.children);
+    const hasChildren = treeData.some((node) => node.id === nodeId && node.children);
     if (hasChildren) {
-        return treeData.map(node => node.id === nodeId ? { ...node, errorMessage: "You have to delete all children nodes first" } : node);
+        return treeData.map((node) =>
+            node.id === nodeId ? { ...node, errorMessage: "You have to delete all children nodes first" } : node
+        );
     }
 
-    return treeData.flatMap(node => {
+    return treeData.flatMap((node) => {
         if (node.id === nodeId) {
             return [];
         } else if (node.children) {
@@ -136,8 +115,5 @@ const renameNodeInTree = (treeData: Node[], nodeId: string, newName: string): No
     });
 };
 
-export const { deleteNode, addNode, renameNode } = treeSlice.actions;
-
-export const selectTreeData = (state: RootState) => state.tree.treeData;
-
+export const { setTreeData } = treeSlice.actions;
 export default treeSlice.reducer;
