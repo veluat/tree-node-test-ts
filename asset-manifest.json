@@ -1,0 +1,13 @@
+{
+  "files": {
+    "main.css": "/tree-node-test-ts/static/css/main.7bccb650.css",
+    "main.js": "/tree-node-test-ts/static/js/main.9744b646.js",
+    "index.html": "/tree-node-test-ts/index.html",
+    "main.7bccb650.css.map": "/tree-node-test-ts/static/css/main.7bccb650.css.map",
+    "main.9744b646.js.map": "/tree-node-test-ts/static/js/main.9744b646.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.7bccb650.css",
+    "static/js/main.9744b646.js"
+  ]
+}
