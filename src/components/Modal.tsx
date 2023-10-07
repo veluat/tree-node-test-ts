@@ -8,9 +8,9 @@ import {Alert, DialogContentText, Paper, TextField} from "@mui/material";
 import style from './Modal.module.scss';
 import {useDispatch} from "react-redux";
 import uuid from 'react-uuid';
-import {checkIfNodeHasChildren, setTreeData} from "./treeSlice";
-import {selectTreeData, store} from "./store";
-import {useCreateNodeMutation, useDeleteNodeMutation, useRenameNodeMutation} from "./api";
+import {checkIfNodeHasChildren, setTreeData} from "../services/treeSlice";
+import {selectTreeData, store} from "../app/store";
+import {useCreateNodeMutation, useDeleteNodeMutation, useRenameNodeMutation} from "../services/api";
 
 type ModalProps = {
     open: boolean;

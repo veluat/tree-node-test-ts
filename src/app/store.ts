@@ -1,6 +1,6 @@
 import {configureStore} from "@reduxjs/toolkit";
-import treeReducer from "./treeSlice";
-import {api} from "./api";
+import treeReducer from "../services/treeSlice";
+import {api} from "../services/api";
 
 export const store = configureStore({
     reducer: {

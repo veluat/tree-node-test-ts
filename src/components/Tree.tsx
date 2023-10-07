@@ -1,6 +1,6 @@
 import { TreeItem } from "@mui/x-tree-view";
 import { ControlPanel } from "./ControlPanel";
-import { TreeNodeType } from "./App";
+import { TreeNodeType } from "../app/App";
 import React, { useEffect, useRef, useState } from "react";
 
 interface TreeProps {

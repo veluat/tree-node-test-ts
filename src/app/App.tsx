@@ -3,10 +3,10 @@ import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import React, {useEffect, useState} from "react";
 import {TreeView} from "@mui/x-tree-view";
-import {setTreeData} from "./treeSlice";
+import {setTreeData} from "../services/treeSlice";
 import {useDispatch, useSelector} from "react-redux";
-import {Tree} from "./Tree";
-import {useGetTreeMutation} from "./api";
+import {Tree} from "../components/Tree";
+import {useGetTreeMutation} from "../services/api";
 import {RootState} from "./store";
 
 export type TreeNodeType = {

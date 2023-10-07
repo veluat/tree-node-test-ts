@@ -24,7 +24,7 @@ interface RenameNodeRequest {
     newNodeName: string;
 }
 
-const baseUrl = process.env.BASE_URL
+const baseUrl = 'https://test.vmarmysh.com'
 
 export const api = createApi({
     baseQuery: fetchBaseQuery({baseUrl}),
