@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
+import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
 
 export interface Node {
     id: string;
@@ -24,10 +24,13 @@ interface RenameNodeRequest {
     newNodeName: string;
 }
 
-const baseUrl = 'https://test.vmarmysh.com'
+const baseUrl = 'http://localhost:3000';
 
 export const api = createApi({
-    baseQuery: fetchBaseQuery({baseUrl}),
+    baseQuery: fetchBaseQuery({
+        baseUrl,
+        credentials: "include"
+    }),
     endpoints: (builder) => ({
         getTree: builder.mutation<GetTreeResponse, string>({
             query: (treeName) => ({
