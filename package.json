@@ -3,12 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "homepage": "https://veluat.github.io/tree-node-test-ts",
-  "jest": {
-    "moduleNameMapper": {
-      "axios": "axios/dist/node/axios.cjs"
-    }
-  },
-  "dependencies": {
+  "ependencies": {
     "@emotion/react": "^11.10.8",
     "@emotion/styled": "^11.10.8",
     "@material-ui/icons": "^4.11.3",
