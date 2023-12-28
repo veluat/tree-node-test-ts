@@ -24,7 +24,7 @@ interface RenameNodeRequest {
     newNodeName: string;
 }
 
-const baseUrl = 'http://localhost:3000';
+const baseUrl = 'https://test.vmarmysh.com';
 
 export const api = createApi({
     baseQuery: fetchBaseQuery({
