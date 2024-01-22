@@ -6,11 +6,10 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import {Alert, DialogContentText, Paper, TextField} from "@mui/material";
 import style from './Modal.module.scss';
-import {useDispatch} from "react-redux";
-import uuid from 'react-uuid';
-import {checkIfNodeHasChildren, setTreeData} from "../services/treeSlice";
+import {checkIfNodeHasChildren} from "../services/treeSlice";
 import {selectTreeData, store} from "../app/store";
 import {useCreateNodeMutation, useDeleteNodeMutation, useRenameNodeMutation} from "../services/api";
+import { v4 as uuidv4 } from 'uuid';
 
 type ModalProps = {
     open: boolean;
@@ -90,7 +89,7 @@ export const Modal: React.FC<ModalProps> = ({
     }, [title, nodeName]);
 
     const generateUniqueId = () => {
-        return uuid();
+        return uuidv4();
     };
 
     return (
