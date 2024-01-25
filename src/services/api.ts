@@ -24,11 +24,9 @@ interface RenameNodeRequest {
     newNodeName: string;
 }
 
-const baseUrl = 'https://test.vmarmysh.com';
-
 export const api = createApi({
     baseQuery: fetchBaseQuery({
-        baseUrl,
+        baseUrl: 'https://test.vmarmysh.com',
         credentials: "include"
     }),
     endpoints: (builder) => ({
