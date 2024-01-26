@@ -27,7 +27,7 @@ export function App() {
     const [appError, setAppError] = useState<string | null>(null);
 
     useEffect(() => {
-        getTree("MyTree")
+        getTree("ExampleTree")
             .unwrap()
             .then((responseData) => {
                 dispatch(setTreeData(responseData));
