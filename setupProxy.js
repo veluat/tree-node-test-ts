@@ -5,7 +5,7 @@ module.exports = function(app) {
         '/api',
         createProxyMiddleware({
             headers: {
-                'Access-Control-Allow-Origin': 'http://localhost:3000',
+                'Access-Control-Allow-Origin': 'https://veluat.github.io/tree-node-test-ts',
                 'Access-Control-Allow-Credentials': true,
             },
             changeOrigin: true,
